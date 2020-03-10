@@ -7,9 +7,15 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <math.h>
+#include <climits>
+
+#define INF INT_MAX
 
 void readFile(std::string fileName);
 void parseLine(std::string line);
+void createFirstNode();
+std::vector< std::vector< int > > createGraph(int vertexID);
 
 struct vertex {
     int ID;
@@ -20,8 +26,14 @@ struct vertex {
 
 struct node {
     int cost;
-    int reducedMatrix[0][0];
+    std::vector< std::vector< int > > graph;
     vertex Vertex;
+    node(vertex Vertex): Vertex(Vertex) {
+        graph = createGraph(Vertex.ID);
+    }
 };
+
+std::vector<vertex> vertexList;
+std::vector<node> nodeList;
 
 #endif
