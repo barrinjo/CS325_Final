@@ -1,9 +1,17 @@
 #include "node.hpp"
-// #include "global.hpp"
 
+// node constructor
 Node::Node(int vertexID, std::vector<Vertex*> *vertexListID): vertexID(vertexID), vertexListID(vertexListID) {
     graph = createGraph();
-    reduceGraph(graph);
+    graph = reduceGraph(graph);
+}
+
+std::vector< std::vector< int > > Node::getGraph() {
+    return graph;
+}
+
+void Node::setCost(int newCost) {
+    cost = newCost;
 }
 
 std::vector< std::vector< int > > Node::createGraph() {
@@ -13,7 +21,7 @@ std::vector< std::vector< int > > Node::createGraph() {
         std::vector< int > row;
         for(unsigned int j = 0; j < vertexList.size(); j++) {
             if(i == j) {
-                row.push_back(0);
+                row.push_back(INT_MAX);
             }
             else {
                 int dist;
@@ -28,5 +36,42 @@ std::vector< std::vector< int > > Node::createGraph() {
     return graph;
 }
 
-void Node::reduceGraph(std::vector< std::vector< int > > graph) {
+std::vector< std::vector< int > > Node::reduceGraph(std::vector< std::vector< int > > graph) {
+    for(unsigned int i = 0; i < graph.size(); i++) {
+        int min = INT_MAX;
+        for(unsigned int j = 0; j < graph.size(); j++) {
+            if(graph[i][j] < min)
+                min = graph[i][j];
+        }
+        for(unsigned int j = 0; j < graph.size(); j++) {
+            graph[i][j] -= min;
+        }
+        graph[i].push_back(min);
+    }
+
+    std::vector< int > temp;
+    for(unsigned int i = 0; i < graph.size(); i++) {
+        int min = INT_MAX;
+        for(unsigned int j = 0; j < graph.size(); j++) {
+            if(graph[j][i] < min)
+                min = graph[j][i];
+        }
+        for(unsigned int j = 0; j < graph.size(); j++) {
+            graph[j][i] -= min;
+        }
+        
+        temp.push_back(min);
+    }
+    graph.push_back(temp);
+
+    return graph;
+}
+
+int Node::reducedCost(std::vector< std::vector< int > > graph) {
+    int sum = 0;
+    for(unsigned int i = 0; i < graph.size(); i++) {
+        sum += graph[i][graph.size()-1];
+        sum += graph[graph.size()-1][i];
+    }
+    return sum;
 }

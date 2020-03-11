@@ -10,6 +10,7 @@ int main(int argc, char ** argv) {
     return 0;
 }
 
+// open file from commandline and give each line to parseLine
 void readFile(std::string fileName) {
     std::ifstream fileIn(fileName);
     std::string line;
@@ -21,6 +22,11 @@ void readFile(std::string fileName) {
     fileIn.close();
 }
 
+// splits line by spaces
+// first number is the vertexID
+// second and third numbers are the x and y location values
+// once the information is taken from the string,
+// a new vertex is created and pushed onto the vertexList vector
 void parseLine(std::string line) {
     std::istringstream iss(line);
     int ID, left, right;
@@ -43,7 +49,10 @@ void parseLine(std::string line) {
     vertexList.push_back(temp);
 }
 
+// test function to create a node
+// node construction handles graph generation automatically.
 void createFirstNode() {
     Node *root = new Node(vertexList[0]->getID(), &vertexList);
+    root->setCost(root->reducedCost(root->getGraph()));
     nodeList.push_back(root);
 }
