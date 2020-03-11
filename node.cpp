@@ -1,17 +1,27 @@
 #include "node.hpp"
 
 // node constructor
-Node::Node(int vertexID, std::vector<Vertex*> *vertexListID): vertexID(vertexID), vertexListID(vertexListID) {
-    graph = createGraph();
-    graph = reduceGraph(graph);
-}
+Node::Node(int vertexID, std::vector<Vertex*> *vertexListID):
+    vertexID(vertexID),
+    vertexListID(vertexListID) {
+        graph = createGraph();
+        graph = reduceGraph(graph);
+        reduceCost = setReducedCost(graph);
+    }
+
+Node::Node(int vertexID, int parentID, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID):
+    vertexID(vertexID),
+    parentID(parentID),
+    graph(graph),
+    // travelCost(setTravelCost()),
+    vertexListID(vertexListID) {}
 
 std::vector< std::vector< int > > Node::getGraph() {
     return graph;
 }
 
 void Node::setCost(int newCost) {
-    cost = newCost;
+    reduceCost = newCost;
 }
 
 std::vector< std::vector< int > > Node::createGraph() {
@@ -67,7 +77,7 @@ std::vector< std::vector< int > > Node::reduceGraph(std::vector< std::vector< in
     return graph;
 }
 
-int Node::reducedCost(std::vector< std::vector< int > > graph) {
+int Node::setReducedCost(std::vector< std::vector< int > > graph) {
     int sum = 0;
     for(unsigned int i = 0; i < graph.size(); i++) {
         sum += graph[i][graph.size()-1];
@@ -75,3 +85,7 @@ int Node::reducedCost(std::vector< std::vector< int > > graph) {
     }
     return sum;
 }
+
+// int Node::setTravelCost() {
+//     return graph[]
+// }

@@ -6,6 +6,7 @@ std::vector<Node*> nodeList;
 int main(int argc, char ** argv) {
     readFile(argv[1]);
     createFirstNode();
+    addChildNodes(0);
 
     return 0;
 }
@@ -53,6 +54,22 @@ void parseLine(std::string line) {
 // node construction handles graph generation automatically.
 void createFirstNode() {
     Node *root = new Node(vertexList[0]->getID(), &vertexList);
-    root->setCost(root->reducedCost(root->getGraph()));
     nodeList.push_back(root);
+}
+
+void addChildNodes(int NodeID) {
+    for(int i = 0; i < vertexList.size(); i++) {
+        if(i != NodeID) {
+            if(vertexList[NodeID]->getVisitedBy().size()) {
+                std::vector< int > temp = vertexList[NodeID]->getVisitedBy();
+                if(!std::count(temp.begin(), temp.end(), NodeID)) {
+                    vertexList[NodeID]->addVisited(i);
+                    nodeList.push_back(new Node(i, NodeID, nodeList[NodeID]->getGraph(), &vertexList));
+                }
+            } else {
+                vertexList[NodeID]->addVisited(i);
+                nodeList.push_back(new Node(i, NodeID, nodeList[NodeID]->getGraph(), &vertexList));
+            }
+        }
+    }
 }
