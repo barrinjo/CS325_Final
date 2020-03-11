@@ -54,7 +54,6 @@ void parseLine(std::string line) {
 // node construction handles graph generation automatically.
 void createFirstNode() {
     Node *root = new Node(vertexList[0]->getID(), &vertexList);
-    root->setTotalCost(root->getReduceCost());
     nodeList.push_back(root);
 }
 
@@ -65,11 +64,11 @@ void addChildNodes(int NodeID) {
                 std::vector< int > temp = vertexList[NodeID]->getVisitedBy();
                 if(!std::count(temp.begin(), temp.end(), NodeID)) {
                     vertexList[NodeID]->addVisited(i);
-                    nodeList.push_back(new Node(i, NodeID, nodeList[NodeID]->getGraph(), &vertexList));
+                    nodeList.push_back(new Node(i, NodeID, nodeList[NodeID]->getTotalCost(), nodeList[NodeID]->getGraph(), &vertexList));
                 }
             } else {
                 vertexList[NodeID]->addVisited(i);
-                nodeList.push_back(new Node(i, NodeID, nodeList[NodeID]->getGraph(), &vertexList));
+                nodeList.push_back(new Node(i, NodeID, nodeList[NodeID]->getTotalCost(), nodeList[NodeID]->getGraph(), &vertexList));
             }
         }
     }
