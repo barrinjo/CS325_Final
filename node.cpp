@@ -4,29 +4,39 @@
 Node::Node(int vertexID, std::vector<Vertex*> *vertexListID):
     vertexID(vertexID),
     vertexListID(vertexListID) {
-        graph = createGraph();
-        graph = reduceGraph(graph);
-        reduceCost = setReducedCost(graph);
+        createGraph();
+        reduceGraph();
+        reduceCost = setReducedCost();
     }
 
 Node::Node(int vertexID, int parentID, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID):
     vertexID(vertexID),
     parentID(parentID),
     graph(graph),
-    // travelCost(setTravelCost()),
-    vertexListID(vertexListID) {}
+    vertexListID(vertexListID) {
+        travelCost = graph[vertexID][parentID];
+        reviseGraph();
+        reduceCost = setReducedCost();
+    }
 
 std::vector< std::vector< int > > Node::getGraph() {
     return graph;
+}
+
+int Node::getReduceCost() {
+    return reduceCost;
 }
 
 void Node::setCost(int newCost) {
     reduceCost = newCost;
 }
 
-std::vector< std::vector< int > > Node::createGraph() {
+void Node::setTotalCost(int newTotal) {
+    totalCost = newTotal;
+}
+
+void Node::createGraph() {
     std::vector<Vertex*> vertexList = *vertexListID;
-    std::vector< std::vector< int > > graph;
     for(unsigned int i = 0; i < vertexList.size(); i++) {
         std::vector< int > row;
         for(unsigned int j = 0; j < vertexList.size(); j++) {
@@ -43,10 +53,9 @@ std::vector< std::vector< int > > Node::createGraph() {
         }
         graph.push_back(row);
     }
-    return graph;
 }
 
-std::vector< std::vector< int > > Node::reduceGraph(std::vector< std::vector< int > > graph) {
+void Node::reduceGraph() {
     for(unsigned int i = 0; i < graph.size(); i++) {
         int min = INT_MAX;
         for(unsigned int j = 0; j < graph.size(); j++) {
@@ -73,11 +82,13 @@ std::vector< std::vector< int > > Node::reduceGraph(std::vector< std::vector< in
         temp.push_back(min);
     }
     graph.push_back(temp);
-
-    return graph;
 }
 
-int Node::setReducedCost(std::vector< std::vector< int > > graph) {
+void Node::reviseGraph() {
+}
+
+
+int Node::setReducedCost() {
     int sum = 0;
     for(unsigned int i = 0; i < graph.size(); i++) {
         sum += graph[i][graph.size()-1];
@@ -85,7 +96,3 @@ int Node::setReducedCost(std::vector< std::vector< int > > graph) {
     }
     return sum;
 }
-
-// int Node::setTravelCost() {
-//     return graph[]
-// }

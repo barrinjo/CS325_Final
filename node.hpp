@@ -16,20 +16,28 @@
 // vertexListID is a pointer so nodes can access the vertexList
 class Node {
 private:
-    int reduceCost;
-    int travelCost;
     int vertexID;
     int parentID;
+    int reduceCost;
+    int travelCost;
+    int totalCost;
     std::vector< std::vector< int > > graph;
     std::vector<Vertex*> *vertexListID;
 
-    std::vector< std::vector< int > > createGraph();
-    std::vector< std::vector< int > > reduceGraph(std::vector< std::vector< int > > graph);
-    int setReducedCost(std::vector< std::vector< int > > graph);
-    int setTravelCost();
+    void createGraph();
+    void reduceGraph();
+    void reviseGraph();
+    int setReducedCost();
 public:
+    // Node functions
     Node(int vertexID, std::vector<Vertex*> *vertexListID);
     Node(int vertexID, int parentID, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID);
+
+    // Node Getters
     std::vector< std::vector< int > > getGraph();
-    void setCost(int reduceCost);
+    int getReduceCost();
+
+    // Node Setters
+    void setCost(int newCost);
+    void setTotalCost(int newTotal);
 };

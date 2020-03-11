@@ -54,6 +54,7 @@ void parseLine(std::string line) {
 // node construction handles graph generation automatically.
 void createFirstNode() {
     Node *root = new Node(vertexList[0]->getID(), &vertexList);
+    root->setTotalCost(root->getReduceCost());
     nodeList.push_back(root);
 }
 
