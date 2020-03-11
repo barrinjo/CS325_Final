@@ -17,10 +17,8 @@
 class Node {
 private:
     int vertexID;
-    int parentID;
+    Node * parentID;
     int parentCost;
-    int reduceCost;
-    int travelCost;
     int totalCost;
     std::vector< std::vector< int > > graph;
     std::vector<Vertex*> *vertexListID;
@@ -32,9 +30,11 @@ private:
 public:
     // Node functions
     Node(int vertexID, std::vector<Vertex*> *vertexListID);
-    Node(int vertexID, int parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID);
+    Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID);
 
     // Node Getters
     std::vector< std::vector< int > > getGraph();
+    Node * getParentID();
+    int getvertexID();
     int getTotalCost();
 };

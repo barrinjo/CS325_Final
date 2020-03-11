@@ -3,28 +3,38 @@
 // node constructor
 Node::Node(int vertexID, std::vector<Vertex*> *vertexListID):
     vertexID(vertexID),
+    parentID(NULL),
+    parentCost(0),
     vertexListID(vertexListID) {
         createGraph();
         reduceGraph();
-        reduceCost = setReducedCost();
+        int reduceCost = setReducedCost();
         totalCost = reduceCost;
     }
 
-Node::Node(int vertexID, int parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID):
+Node::Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID):
     vertexID(vertexID),
     parentID(parentID),
     parentCost(parentCost),
     graph(graph),
     vertexListID(vertexListID) {
-        travelCost = graph[vertexID][parentID];
+        int travelCost = graph[vertexID][parentID->getvertexID()];
         reviseGraph();
         reduceGraph();
-        reduceCost = setReducedCost();
+        int reduceCost = setReducedCost();
         totalCost = reduceCost + travelCost + parentCost;
     }
 
 std::vector< std::vector< int > > Node::getGraph() {
     return graph;
+}
+
+Node * Node::getParentID() {
+    return parentID;
+}
+
+int Node::getvertexID() {
+    return vertexID;
 }
 
 int Node::getTotalCost() {
@@ -82,7 +92,7 @@ void Node::reduceGraph() {
 
 void Node::reviseGraph() {
     for(unsigned int i = 0; i < graph.size()-1; i++) {
-        graph[parentID][i] = graph[i][vertexID] = INT_MAX;
+        graph[parentID->getvertexID()][i] = graph[i][vertexID] = INT_MAX;
     }
 }
 
