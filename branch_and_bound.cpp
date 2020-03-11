@@ -1,5 +1,8 @@
 #include "branch_and_bound.hpp"
 
+std::vector<Vertex*> vertexList;
+std::vector<Node*> nodeList;
+
 int main(int argc, char ** argv) {
     readFile(argv[1]);
     createFirstNode();
@@ -36,32 +39,11 @@ void parseLine(std::string line) {
                 break;
         }
     }
-    vertex temp = vertex(ID, std::make_pair(left, right));
+    Vertex *temp = new Vertex(ID, std::make_pair(left, right));
     vertexList.push_back(temp);
 }
 
 void createFirstNode() {
-    node root = node(vertexList[0]);
+    Node *root = new Node(vertexList[0]->getID(), &vertexList);
     nodeList.push_back(root);
-}
-
-std::vector< std::vector< int > > createGraph(int vertexID) {
-    std::vector< std::vector< int > > graph;
-    for(unsigned int i = 0; i < vertexList.size(); i++) {
-        std::vector< int > row;
-        for(unsigned int j = 0; j < vertexList.size(); j++) {
-            if(i == j) {
-                row.push_back(0);
-            }
-            else {
-                int dist;
-                int left = vertexList[i].location.first - vertexList[j].location.first;
-                int right = vertexList[i].location.second - vertexList[j].location.second;
-                dist = round(sqrt(left*left + right*right));
-                row.push_back(dist);
-            }
-        }
-        graph.push_back(row);
-    }
-    return graph;
 }
