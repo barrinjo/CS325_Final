@@ -11,4 +11,5 @@
 void readFile(std::string fileName);
 void parseLine(std::string line);
 void createFirstNode();
+void addFirstNodes();
 void addChildNodes(Node *currentNode);

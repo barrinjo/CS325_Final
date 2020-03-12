@@ -6,7 +6,16 @@ std::vector<Node*> nodeList;
 int main(int argc, char ** argv) {
     readFile(argv[1]);
     createFirstNode();
-    addChildNodes(nodeList[0]);
+    addFirstNodes();
+    int minValue = INT_MAX;
+    int loc;
+    for(unsigned int i = 0; i < nodeList.size(); i++) {
+        if(nodeList[i]->getTotalCost() < minValue && !nodeList[i]->isTaken()) {
+            minValue = nodeList[i]->getTotalCost();
+            loc = i;
+        }
+    }
+    addChildNodes(nodeList[loc]);
 
     return 0;
 }
@@ -57,19 +66,18 @@ void createFirstNode() {
     nodeList.push_back(root);
 }
 
+void addFirstNodes() {
+    for(int i = 1; i < vertexList.size(); i++) {
+        nodeList.push_back(new Node(i, nodeList[0], nodeList[0]->getTotalCost(), nodeList[0]->getGraph(), &vertexList));
+    }
+}
+
 void addChildNodes(Node *currentNode) {
-    int NodeID = currentNode->getvertexID();
-    for(int i = 0; i < vertexList.size(); i++) {
-        if(i != NodeID) {
-            if(vertexList[NodeID]->getVisitedBy().size()) {
-                std::vector< int > temp = vertexList[NodeID]->getVisitedBy();
-                if(!std::count(temp.begin(), temp.end(), NodeID)) {
-                    vertexList[NodeID]->addVisited(i);
-                    nodeList.push_back(new Node(i, currentNode, nodeList[NodeID]->getTotalCost(), nodeList[NodeID]->getGraph(), &vertexList));
-                }
-            } else {
-                vertexList[NodeID]->addVisited(i);
-                nodeList.push_back(new Node(i, currentNode, nodeList[NodeID]->getTotalCost(), nodeList[NodeID]->getGraph(), &vertexList));
+    Node *NodeID = currentNode->getParentID();
+    for(unsigned int i = 0; i < nodeList.size(); i++) {
+        if(!nodeList[i]->isTaken()) {
+            if(nodeList[i]->getParentID() == NodeID && nodeList[i]->getvertexID() != currentNode->getvertexID()) {
+                nodeList.push_back(new Node(nodeList[i]->getvertexID(), currentNode, currentNode->getTotalCost(), currentNode->getGraph(), &vertexList));
             }
         }
     }

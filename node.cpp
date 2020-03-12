@@ -5,10 +5,10 @@ Node::Node(int vertexID, std::vector<Vertex*> *vertexListID):
     vertexID(vertexID),
     parentID(NULL),
     parentCost(0),
-    vertexListID(vertexListID) {
+    vertexListID(vertexListID),
+    taken(true) {
         createGraph();
-        reduceGraph();
-        int reduceCost = setReducedCost();
+        int reduceCost = reduceGraph();
         totalCost = reduceCost;
     }
 
@@ -17,11 +17,11 @@ Node::Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vect
     parentID(parentID),
     parentCost(parentCost),
     graph(graph),
-    vertexListID(vertexListID) {
-        int travelCost = graph[vertexID][parentID->getvertexID()];
+    vertexListID(vertexListID),
+    taken(false) {
+        int travelCost = graph[parentID->getvertexID()][vertexID];
         reviseGraph();
-        reduceGraph();
-        int reduceCost = setReducedCost();
+        int reduceCost = reduceGraph();
         totalCost = reduceCost + travelCost + parentCost;
     }
 
@@ -39,6 +39,10 @@ int Node::getvertexID() {
 
 int Node::getTotalCost() {
     return totalCost;
+}
+
+bool Node::isTaken() {
+    return taken;
 }
 
 void Node::createGraph() {
@@ -61,47 +65,48 @@ void Node::createGraph() {
     }
 }
 
-void Node::reduceGraph() {
-    for(unsigned int i = 0; i < graph.size(); i++) {
+int Node::reduceGraph() {
+    int sum = 0;
+
+    for(unsigned int i = 0; i < graph[0].size(); i++) {
         int min = INT_MAX;
-        for(unsigned int j = 0; j < graph.size(); j++) {
+        for(unsigned int j = 0; j < graph[0].size(); j++) {
             if(graph[i][j] < min)
                 min = graph[i][j];
         }
-        for(unsigned int j = 0; j < graph.size(); j++) {
-            graph[i][j] -= min;
+        // graph[i].push_back(min);
+        if(min < 1000000000) {
+            for(unsigned int j = 0; j < graph[0].size(); j++) {
+                graph[i][j] -= min;
+            }
+            sum += min;   
         }
-        graph[i].push_back(min);
     }
 
-    std::vector< int > temp;
-    for(unsigned int i = 0; i < graph.size(); i++) {
+    // std::vector< int > temp;
+    for(unsigned int i = 0; i < graph[0].size(); i++) {
         int min = INT_MAX;
-        for(unsigned int j = 0; j < graph.size(); j++) {
+        for(unsigned int j = 0; j < graph[0].size(); j++) {
             if(graph[j][i] < min)
                 min = graph[j][i];
         }
-        for(unsigned int j = 0; j < graph.size(); j++) {
-            graph[j][i] -= min;
+        if(min < 10000000) {
+            for(unsigned int j = 0; j < graph[0].size(); j++) {
+                graph[j][i] -= min;
+            }
+            sum += min;   
         }
-        
-        temp.push_back(min);
     }
-    graph.push_back(temp);
+    
+    return sum;
 }
 
 void Node::reviseGraph() {
-    for(unsigned int i = 0; i < graph.size()-1; i++) {
-        graph[parentID->getvertexID()][i] = graph[i][vertexID] = INT_MAX;
+    for(unsigned int i = 0; i < graph[0].size(); i++) {
+        graph[parentID->getvertexID()][i] = INT_MAX;
+        graph[i][vertexID] = INT_MAX;
     }
-}
+    graph[vertexID][parentID->getvertexID()] = INT_MAX;
 
-
-int Node::setReducedCost() {
-    int sum = 0;
-    for(unsigned int i = 0; i < graph.size(); i++) {
-        sum += graph[i][graph.size()-1];
-        sum += graph[graph.size()-1][i];
-    }
-    return sum;
+    return;
 }
