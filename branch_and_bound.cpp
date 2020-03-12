@@ -5,17 +5,7 @@ std::vector<Node*> nodeList;
 
 int main(int argc, char ** argv) {
     readFile(argv[1]);
-    createFirstNode();
-    addFirstNodes();
-    int minValue = INT_MAX;
-    int loc;
-    for(unsigned int i = 0; i < nodeList.size(); i++) {
-        if(nodeList[i]->getTotalCost() < minValue && !nodeList[i]->isTaken()) {
-            minValue = nodeList[i]->getTotalCost();
-            loc = i;
-        }
-    }
-    addChildNodes(nodeList[loc]);
+    nodeList.push_back(new Node(0, &vertexList, &nodeList));
 
     return 0;
 }
@@ -58,16 +48,8 @@ void parseLine(std::string line) {
     Vertex *temp = new Vertex(ID, std::make_pair(left, right));
     vertexList.push_back(temp);
 }
-
-// test function to create a node
-// node construction handles graph generation automatically.
-void createFirstNode() {
-    Node *root = new Node(vertexList[0]->getID(), &vertexList);
-    nodeList.push_back(root);
-}
-
 void addFirstNodes() {
-    for(int i = 1; i < vertexList.size(); i++) {
+    for(unsigned int i = 1; i < vertexList.size(); i++) {
         nodeList.push_back(new Node(i, nodeList[0], nodeList[0]->getTotalCost(), nodeList[0]->getGraph(), &vertexList));
     }
 }
@@ -75,10 +57,10 @@ void addFirstNodes() {
 void addChildNodes(Node *currentNode) {
     Node *NodeID = currentNode->getParentID();
     for(unsigned int i = 0; i < nodeList.size(); i++) {
-        if(!nodeList[i]->isTaken()) {
+        // if(!nodeList[i]->isTaken()) {
             if(nodeList[i]->getParentID() == NodeID && nodeList[i]->getvertexID() != currentNode->getvertexID()) {
                 nodeList.push_back(new Node(nodeList[i]->getvertexID(), currentNode, currentNode->getTotalCost(), currentNode->getGraph(), &vertexList));
             }
-        }
+        // }
     }
 }

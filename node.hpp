@@ -22,14 +22,14 @@ private:
     int totalCost;
     std::vector< std::vector< int > > graph;
     std::vector<Vertex*> *vertexListID;
-    bool taken;
+    int depth;
 
     void createGraph();
     int reduceGraph();
     void reviseGraph();
 public:
     // Node functions
-    Node(int vertexID, std::vector<Vertex*> *vertexListID);
+    Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID);
     Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID);
 
     // Node Getters
@@ -37,5 +37,4 @@ public:
     Node * getParentID();
     int getvertexID();
     int getTotalCost();
-    bool isTaken();
 };

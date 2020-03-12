@@ -1,15 +1,18 @@
 #include "node.hpp"
 
 // node constructor
-Node::Node(int vertexID, std::vector<Vertex*> *vertexListID):
+Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID):
     vertexID(vertexID),
     parentID(NULL),
     parentCost(0),
-    vertexListID(vertexListID),
-    taken(true) {
+    vertexListID(vertexListID) {
         createGraph();
         int reduceCost = reduceGraph();
         totalCost = reduceCost;
+        
+        for(unsigned int i = 1; i < vertexListID->size(); i++) {
+            nodeListID->push_back(new Node(i, this, totalCost, graph, vertexListID));
+        }
     }
 
 Node::Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID):
@@ -17,8 +20,7 @@ Node::Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vect
     parentID(parentID),
     parentCost(parentCost),
     graph(graph),
-    vertexListID(vertexListID),
-    taken(false) {
+    vertexListID(vertexListID) {
         int travelCost = graph[parentID->getvertexID()][vertexID];
         reviseGraph();
         int reduceCost = reduceGraph();
@@ -39,10 +41,6 @@ int Node::getvertexID() {
 
 int Node::getTotalCost() {
     return totalCost;
-}
-
-bool Node::isTaken() {
-    return taken;
 }
 
 void Node::createGraph() {
