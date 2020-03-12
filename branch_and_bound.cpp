@@ -48,19 +48,20 @@ void parseLine(std::string line) {
     Vertex *temp = new Vertex(ID, std::make_pair(left, right));
     vertexList.push_back(temp);
 }
-void addFirstNodes() {
-    for(unsigned int i = 1; i < vertexList.size(); i++) {
-        nodeList.push_back(new Node(i, nodeList[0], nodeList[0]->getTotalCost(), nodeList[0]->getGraph(), &vertexList));
-    }
-}
 
-void addChildNodes(Node *currentNode) {
-    Node *NodeID = currentNode->getParentID();
-    for(unsigned int i = 0; i < nodeList.size(); i++) {
-        // if(!nodeList[i]->isTaken()) {
-            if(nodeList[i]->getParentID() == NodeID && nodeList[i]->getvertexID() != currentNode->getvertexID()) {
-                nodeList.push_back(new Node(nodeList[i]->getvertexID(), currentNode, currentNode->getTotalCost(), currentNode->getGraph(), &vertexList));
-            }
-        // }
-    }
-}
+// void addFirstNodes() {
+//     for(unsigned int i = 1; i < vertexList.size(); i++) {
+//         nodeList.push_back(new Node(i, nodeList[0], nodeList[0]->getTotalCost(), nodeList[0]->getGraph(), &vertexList, 0));
+//     }
+// }
+
+// void addChildNodes(Node *currentNode) {
+//     Node *NodeID = currentNode->getParentID();
+//     for(unsigned int i = 0; i < nodeList.size(); i++) {
+//         // if(!nodeList[i]->isTaken()) {
+//             if(nodeList[i]->getParentID() == NodeID && nodeList[i]->getvertexID() != currentNode->getvertexID()) {
+//                 nodeList.push_back(new Node(nodeList[i]->getvertexID(), currentNode, currentNode->getTotalCost(), currentNode->getGraph(), &vertexList));
+//             }
+//         // }
+//     }
+// }

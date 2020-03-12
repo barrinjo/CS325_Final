@@ -1,30 +1,84 @@
 #include "node.hpp"
 
+struct comp {
+    bool operator()(Node* left, Node* right) const
+    {
+        return left->getTotalCost() > right->getTotalCost();
+    }
+};
+
 // node constructor
 Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID):
     vertexID(vertexID),
     parentID(NULL),
     parentCost(0),
-    vertexListID(vertexListID) {
+    vertexListID(vertexListID),
+    depth(0) {
         createGraph();
         int reduceCost = reduceGraph();
         totalCost = reduceCost;
-        
+        std::priority_queue<Node*, std::vector<Node*>, comp> queue;
+
         for(unsigned int i = 1; i < vertexListID->size(); i++) {
-            nodeListID->push_back(new Node(i, this, totalCost, graph, vertexListID));
+            Node *node = new Node(i, this, totalCost, graph, vertexListID, 1);
+            // printf("add v: %i, cost: %i, depth: %i\n", node->getvertexID(), node->getTotalCost(), node->getDepth());
+            queue.push(node);
+        }
+        int maxDepth = 0;
+        while(true) {
+            Node *parentNode = queue.top();
+            queue.pop();
+            if(parentNode->getDepth() > maxDepth) {
+                maxDepth = parentNode->getDepth();
+                printf("%i\n", maxDepth);
+            }
+            // printf("step v: %i, cost: %i, depth: %i\n", parentNode->getvertexID(), parentNode->getTotalCost(), parentNode->getDepth());
+            int loc = parentNode->getvertexID();
+            for(unsigned int i = 0; i < vertexListID->size(); i++) {
+                std::vector< std::vector< int > > currentGraph = parentNode->getGraph();
+                if(currentGraph[loc][i] < 1000000 && currentGraph[loc][i] >= 0) {
+                    // printf("loc: %i, i: %i, currentGraph: %i\n", loc, i, currentGraph[loc][i]);
+                    Node *node = new Node(i,
+                                          parentNode,
+                                          parentNode->getTotalCost(),
+                                          parentNode->getGraph(),
+                                          vertexListID,
+                                          parentNode->getDepth()+1);
+                    // printf("new v: %i, cost: %i, depth: %i\n", node->getvertexID(), node->getTotalCost(), node->getDepth());
+                    queue.push(node);
+                }
+            }
         }
     }
 
-Node::Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID):
+Node::Node(int vertexID,
+           Node * parentID,
+           int parentCost,
+           std::vector< std::vector< int > > graph,
+           std::vector<Vertex*> *vertexListID,
+           int depth):
     vertexID(vertexID),
     parentID(parentID),
     parentCost(parentCost),
     graph(graph),
-    vertexListID(vertexListID) {
+    vertexListID(vertexListID),
+    depth(depth) {
         int travelCost = graph[parentID->getvertexID()][vertexID];
         reviseGraph();
         int reduceCost = reduceGraph();
+        // printf("r: %i, t: %i, p: %i\n", reduceCost, travelCost, parentCost);
         totalCost = reduceCost + travelCost + parentCost;
+
+        if(depth == vertexListID->size()-1) {
+            printf("total cost: %i\n", totalCost);
+            printf("%i, ", vertexID);
+            while(parentID) {
+                printf("%i, ", parentID->getvertexID());
+                parentID = parentID->getParentID();
+            }
+            std::cout << std::endl;
+            exit(0);
+        }
     }
 
 std::vector< std::vector< int > > Node::getGraph() {
@@ -41,6 +95,10 @@ int Node::getvertexID() {
 
 int Node::getTotalCost() {
     return totalCost;
+}
+
+int Node::getDepth() {
+    return depth;
 }
 
 void Node::createGraph() {
@@ -103,8 +161,8 @@ void Node::reviseGraph() {
     for(unsigned int i = 0; i < graph[0].size(); i++) {
         graph[parentID->getvertexID()][i] = INT_MAX;
         graph[i][vertexID] = INT_MAX;
+        graph[i][parentID->getvertexID()] = INT_MAX;
     }
-    graph[vertexID][parentID->getvertexID()] = INT_MAX;
 
     return;
 }

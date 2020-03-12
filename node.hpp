@@ -1,7 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <math.h>
 #include <climits>
+#include <queue>
 
 #include "vertex.hpp"
 
@@ -30,11 +32,17 @@ private:
 public:
     // Node functions
     Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID);
-    Node(int vertexID, Node * parentID, int parentCost, std::vector< std::vector< int > > graph, std::vector<Vertex*> *vertexListID);
+    Node(int vertexID,
+         Node * parentID,
+         int parentCost,
+         std::vector< std::vector< int > > graph,
+         std::vector<Vertex*> *vertexListID,
+         int depth);
 
     // Node Getters
     std::vector< std::vector< int > > getGraph();
     Node * getParentID();
     int getvertexID();
     int getTotalCost();
+    int getDepth();
 };
