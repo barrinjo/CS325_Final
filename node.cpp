@@ -45,6 +45,10 @@ bool Node::isTaken() {
     return taken;
 }
 
+void Node::makeTaken() {
+    taken = true;
+}
+
 void Node::createGraph() {
     std::vector<Vertex*> vertexList = *vertexListID;
     for(unsigned int i = 0; i < vertexList.size(); i++) {

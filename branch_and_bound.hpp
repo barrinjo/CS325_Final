@@ -13,3 +13,5 @@ void parseLine(std::string line);
 void createFirstNode();
 void addFirstNodes();
 void addChildNodes(Node *currentNode);
+int createTour();
+bool childNodesExist(Node *node);

@@ -7,15 +7,8 @@ int main(int argc, char ** argv) {
     readFile(argv[1]);
     createFirstNode();
     addFirstNodes();
-    int minValue = INT_MAX;
-    int loc;
-    for(unsigned int i = 0; i < nodeList.size(); i++) {
-        if(nodeList[i]->getTotalCost() < minValue && !nodeList[i]->isTaken()) {
-            minValue = nodeList[i]->getTotalCost();
-            loc = i;
-        }
-    }
-    addChildNodes(nodeList[loc]);
+    createTour();
+    
 
     return 0;
 }
@@ -75,10 +68,55 @@ void addFirstNodes() {
 void addChildNodes(Node *currentNode) {
     Node *NodeID = currentNode->getParentID();
     for(unsigned int i = 0; i < nodeList.size(); i++) {
-        if(!nodeList[i]->isTaken()) {
+        // if(!nodeList[i]->isTaken()) {
             if(nodeList[i]->getParentID() == NodeID && nodeList[i]->getvertexID() != currentNode->getvertexID()) {
-                nodeList.push_back(new Node(nodeList[i]->getvertexID(), currentNode, currentNode->getTotalCost(), currentNode->getGraph(), &vertexList));
+                nodeList.push_back(new Node(nodeList[i]->getvertexID(),
+                                            currentNode,
+                                            currentNode->getTotalCost(),
+                                            currentNode->getGraph(),
+                                            &vertexList));
+            }
+        // }
+    }
+}
+
+int createTour() {
+    Node *currentNode = nodeList[0];
+    while(childNodesExist(currentNode)) {
+        int minValue = INT_MAX;
+        int loc;
+        for(int i = nodeList.size()-1; i >= 0; i--) {
+            // std::cout << nodeList[i]->getvertexID() << " ";
+            if(nodeList[i]->getTotalCost() < minValue && !nodeList[i]->isTaken()) {
+                minValue = nodeList[i]->getTotalCost();
+                loc = i;
             }
         }
+        currentNode = nodeList[loc];
+        // std::cout << std::endl;
+        // std::cout << loc << " , " << currentNode->getvertexID() << " , " << currentNode->isTaken() << " , " << currentNode->getParentID() << std::endl;
+        addChildNodes(nodeList[loc]);
+        currentNode->makeTaken();
     }
+
+    std::vector<Node*> temp;
+    while(currentNode->getParentID()) {
+        temp.push_back(currentNode);
+        currentNode = currentNode->getParentID();
+    }
+    std::cout << 0 << std::endl;
+    for(unsigned int i = 0; i < temp.size(); i++) {
+        std::cout << temp[i]->getvertexID() << std::endl;
+    }
+    std::cout << temp[temp.size()-1]->getTotalCost() << std::endl;
+    return temp[temp.size()-1]->getTotalCost();
+}
+
+bool childNodesExist(Node *node) {
+    for(unsigned int i = 0; i < nodeList.size(); i++) {
+        if(nodeList[i]->getParentID() == node) {
+            return true;
+        }
+    }
+    return false;
 }

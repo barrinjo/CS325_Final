@@ -38,4 +38,7 @@ public:
     int getvertexID();
     int getTotalCost();
     bool isTaken();
+
+    // Node Setters
+    void makeTaken();
 };
