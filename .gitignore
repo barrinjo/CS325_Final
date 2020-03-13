@@ -2,3 +2,5 @@
 /testCases/*
 *.o
 main
+christofides/test.txt
+christofides/kruskal.py
