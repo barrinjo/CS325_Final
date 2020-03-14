@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <math.h>
 #include <climits>
 #include <queue>
@@ -24,20 +25,21 @@ private:
     int totalCost;
     std::vector< std::vector< int > > graph;
     std::vector<Vertex*> *vertexListID;
-    int depth;
+    unsigned int depth;
 
     void createGraph();
     int reduceGraph();
     void reviseGraph();
 public:
     // Node functions
-    Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID);
+    Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID, std::string fileName);
     Node(int vertexID,
          Node * parentID,
          int parentCost,
          std::vector< std::vector< int > > graph,
          std::vector<Vertex*> *vertexListID,
-         int depth);
+         unsigned int depth,
+         std::string fileName);
 
     // Node Getters
     std::vector< std::vector< int > > getGraph();

@@ -5,7 +5,7 @@ std::vector<Node*> nodeList;
 
 int main(int argc, char ** argv) {
     readFile(argv[1]);
-    nodeList.push_back(new Node(0, &vertexList, &nodeList));
+    nodeList.push_back(new Node(0, &vertexList, &nodeList, argv[1]));
 
     return 0;
 }

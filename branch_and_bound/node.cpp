@@ -8,7 +8,7 @@ struct comp {
 };
 
 // node constructor
-Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID):
+Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> *nodeListID, std::string fileName):
     vertexID(vertexID),
     parentID(NULL),
     parentCost(0),
@@ -20,7 +20,7 @@ Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> 
         std::priority_queue<Node*, std::vector<Node*>, comp> queue;
 
         for(unsigned int i = 1; i < vertexListID->size(); i++) {
-            Node *node = new Node(i, this, totalCost, graph, vertexListID, 1);
+            Node *node = new Node(i, this, totalCost, graph, vertexListID, 1, fileName);
             // printf("add v: %i, cost: %i, depth: %i\n", node->getvertexID(), node->getTotalCost(), node->getDepth());
             queue.push(node);
         }
@@ -30,7 +30,7 @@ Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> 
             queue.pop();
             if(parentNode->getDepth() > maxDepth) {
                 maxDepth = parentNode->getDepth();
-                printf("%i\n", maxDepth);
+                // printf("%i\n", maxDepth);
             }
             // printf("step v: %i, cost: %i, depth: %i\n", parentNode->getvertexID(), parentNode->getTotalCost(), parentNode->getDepth());
             int loc = parentNode->getvertexID();
@@ -43,7 +43,8 @@ Node::Node(int vertexID, std::vector<Vertex*> *vertexListID, std::vector<Node*> 
                                           parentNode->getTotalCost(),
                                           parentNode->getGraph(),
                                           vertexListID,
-                                          parentNode->getDepth()+1);
+                                          parentNode->getDepth()+1,
+                                          fileName);
                     // printf("new v: %i, cost: %i, depth: %i\n", node->getvertexID(), node->getTotalCost(), node->getDepth());
                     queue.push(node);
                 }
@@ -56,7 +57,8 @@ Node::Node(int vertexID,
            int parentCost,
            std::vector< std::vector< int > > graph,
            std::vector<Vertex*> *vertexListID,
-           int depth):
+           unsigned int depth,
+           std::string fileName):
     vertexID(vertexID),
     parentID(parentID),
     parentCost(parentCost),
@@ -69,14 +71,23 @@ Node::Node(int vertexID,
         // printf("r: %i, t: %i, p: %i\n", reduceCost, travelCost, parentCost);
         totalCost = reduceCost + travelCost + parentCost;
 
+        std::vector<int> tempArray;
         if(depth == vertexListID->size()-1) {
-            printf("total cost: %i\n", totalCost);
-            printf("%i, ", vertexID);
+            tempArray.push_back(totalCost);
+            tempArray.push_back(vertexID);
+            // printf("total cost: %i\n", totalCost);
+            // printf("%i, ", vertexID);
             while(parentID) {
-                printf("%i, ", parentID->getvertexID());
+                // printf("%i, ", parentID->getvertexID());
+                tempArray.push_back(parentID->getvertexID());
                 parentID = parentID->getParentID();
             }
-            std::cout << std::endl;
+            // std::cout << std::endl;
+            std::ofstream file (fileName + ".tour");
+
+            for(unsigned int i = 0; i < tempArray.size(); i++) {
+                file << tempArray[i] << std::endl;
+            }
             exit(0);
         }
     }
